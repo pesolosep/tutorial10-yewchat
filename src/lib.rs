@@ -3,6 +3,9 @@
 mod components;
 mod services;
 
+use components::login::Login;
+use components::chat::Chat;
+
 use std::cell::RefCell;
 use std::rc::Rc;
 
@@ -10,9 +13,6 @@ use wasm_bindgen::prelude::*;
 use yew::functional::*;
 use yew::prelude::*;
 use yew_router::prelude::*;
-
-use components::chat::Chat;
-use components::login::Login;
 
 // When the `wee_alloc` feature is enabled, this uses `wee_alloc` as the global
 // allocator.
@@ -40,8 +40,17 @@ pub struct UserInner {
     pub username: RefCell<String>,
 }
 
+fn switch(selected_route: &Route) -> Html {
+    match selected_route {
+        Route::Login => html! {<Login />},
+        Route::Chat => html! {<Chat/>},
+        Route::NotFound => html! {<h1>{"404 baby"}</h1>},
+    }
+}
+
 #[function_component(Main)]
 fn main() -> Html {
+
     let ctx = use_state(|| {
         Rc::new(UserInner {
             username: RefCell::new("initial".into()),
@@ -56,14 +65,6 @@ fn main() -> Html {
                 </div>
             </BrowserRouter>
         </ContextProvider<User>>
-    }
-}
-
-fn switch(selected_route: &Route) -> Html {
-    match selected_route {
-        Route::Login => html! {<Login />},
-        Route::Chat => html! {<Chat/>},
-        Route::NotFound => html! {<h1>{"404 baby"}</h1>},
     }
 }
 
